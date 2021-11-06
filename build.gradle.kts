@@ -5,6 +5,7 @@ plugins {
     id("io.spring.dependency-management") version "1.0.11.RELEASE"
     kotlin("jvm") version "1.5.31"
     kotlin("plugin.spring") version "1.5.31"
+    kotlin("plugin.jpa") version "1.5.31"
     jacoco
 }
 
@@ -18,7 +19,7 @@ repositories {
 }
 
 dependencies {
-    implementation("org.springframework.boot:spring-boot-starter-data-jpa:2.5.5")
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa:2.5.6")
     implementation("org.springframework.boot:spring-boot-starter-data-rest:2.5.5")
     implementation("org.springframework.boot:spring-boot-starter-hateoas:2.5.5")
     implementation("org.springframework.boot:spring-boot-starter-web-services:2.5.5")
