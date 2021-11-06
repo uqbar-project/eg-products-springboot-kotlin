@@ -1,7 +1,7 @@
 
 # Productos (problema N + 1 queries)
 
-[![Build Status](https://travis-ci.com/uqbar-project/eg-productos-springboot.svg?branch=master)](https://travis-ci.com/uqbar-project/eg-productos-springboot)
+[![build](https://github.com/uqbar-project/eg-products-springboot-kotlin/actions/workflows/build.yml/badge.svg)](https://github.com/uqbar-project/eg-products-springboot-kotlin/actions/workflows/build.yml) 
 
 Este ejemplo permite ver el problema de los (N + 1) queries. Consiste en un servicio REST hecho con Spring Boot, que tiene un solo endpoint: el que permite consultar los productos más recientes.
 

@@ -12,7 +12,7 @@ import org.uqbar.products.repository.ProductoRepository
 import java.time.LocalDate
 
 @Service
-class ProductosBootstrap : InitializingBean {
+class ProductoBootstrap : InitializingBean {
 
     @Autowired
     lateinit var fabricanteRepository: FabricanteRepository
@@ -50,6 +50,6 @@ class ProductosBootstrap : InitializingBean {
 
 class ServletInitializer : SpringBootServletInitializer() {
     override fun configure(application: SpringApplicationBuilder): SpringApplicationBuilder {
-        return application.sources(ProductsApplication::class.java)
+        return application.sources(ProductoApplication::class.java)
     }
 }
