@@ -25,4 +25,4 @@ jobs:
           configuration-cache-enabled: true
 
       # Send JaCoCo reports to codecov
-      - run: bash <(curl -s https://codecov.io/bash)
+      - uses: codecov/codecov-action@v1
