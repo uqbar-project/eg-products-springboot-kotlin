@@ -21,7 +21,7 @@ repositories {
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa:2.5.6")
     implementation("org.springframework.boot:spring-boot-starter-data-rest:2.5.5")
-    implementation("org.springframework.boot:spring-boot-starter-hateoas:2.5.5")
+    implementation("org.springframework.boot:spring-boot-starter-hateoas:2.5.6")
     implementation("org.springframework.boot:spring-boot-starter-web-services:2.5.5")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.13.0")
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.0")
@@ -29,10 +29,10 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("io.springfox:springfox-boot-starter:3.0.0")
     implementation("io.springfox:springfox-swagger-ui:3.0.0")
-    implementation("org.springframework.boot:spring-boot-devtools:2.5.5")
+    implementation("org.springframework.boot:spring-boot-devtools:2.5.6")
     runtimeOnly("com.h2database:h2:1.4.200")
     runtimeOnly("mysql:mysql-connector-java:8.0.25")
-    testImplementation("org.springframework.boot:spring-boot-starter-test:2.5.5")
+    testImplementation("org.springframework.boot:spring-boot-starter-test:2.5.6")
 }
 
 tasks.withType<KotlinCompile> {
