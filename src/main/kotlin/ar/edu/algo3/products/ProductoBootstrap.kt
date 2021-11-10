@@ -1,14 +1,14 @@
-package org.uqbar.products
+package ar.edu.algo3.products
 
 import org.springframework.beans.factory.InitializingBean
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.builder.SpringApplicationBuilder
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
 import org.springframework.stereotype.Service
-import org.uqbar.products.domain.Fabricante
-import org.uqbar.products.domain.Producto
-import org.uqbar.products.repository.FabricanteRepository
-import org.uqbar.products.repository.ProductoRepository
+import ar.edu.algo3.products.domain.Fabricante
+import ar.edu.algo3.products.domain.Producto
+import ar.edu.algo3.products.repository.FabricanteRepository
+import ar.edu.algo3.products.repository.ProductoRepository
 import java.time.LocalDate
 
 @Service

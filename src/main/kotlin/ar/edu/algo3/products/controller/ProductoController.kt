@@ -1,4 +1,4 @@
-package org.uqbar.products.controller
+package ar.edu.algo3.products.controller
 
 import io.swagger.annotations.ApiOperation
 import org.springframework.beans.factory.annotation.Autowired
@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.CrossOrigin
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.RestController
-import org.uqbar.products.repository.ProductoRepository
-import org.uqbar.products.serializer.ProductoDTO
+import ar.edu.algo3.products.repository.ProductoRepository
+import ar.edu.algo3.products.serializer.ProductoDTO
 
 @RestController
 @CrossOrigin(origins = ["*"], methods = [RequestMethod.GET])

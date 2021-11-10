@@ -1,9 +1,9 @@
-package org.uqbar.products.repository
+package ar.edu.algo3.products.repository
 
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.PagingAndSortingRepository
-import org.uqbar.products.domain.Producto
+import ar.edu.algo3.products.domain.Producto
 
 
 interface ProductoRepository : PagingAndSortingRepository<Producto, Long> {

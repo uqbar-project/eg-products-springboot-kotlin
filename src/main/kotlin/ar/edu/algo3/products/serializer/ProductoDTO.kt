@@ -1,6 +1,6 @@
-package org.uqbar.products.serializer
+package ar.edu.algo3.products.serializer
 
-import org.uqbar.products.domain.Producto
+import ar.edu.algo3.products.domain.Producto
 import java.time.format.DateTimeFormatter
 
 class ProductoDTO {

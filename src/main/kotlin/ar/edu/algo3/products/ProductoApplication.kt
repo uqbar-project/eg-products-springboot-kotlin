@@ -1,4 +1,4 @@
-package org.uqbar.products
+package ar.edu.algo3.products
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication

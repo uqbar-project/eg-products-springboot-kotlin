@@ -1,4 +1,4 @@
-package org.uqbar.products.domain
+package ar.edu.algo3.products.domain
 
 import javax.persistence.*
 
