@@ -169,6 +169,10 @@ Hibernate:
 
 Aun cuando hay que traer 1000 productos, la deserialización de la base hacia el modelo de objetos en la JDK y el posterior render a JSON tarda bastante menos, pero sobre todo, no perjudicamos a la base haciendo 1001 consultas.
 
+## Cómo testear la aplicación en Insomnia
+
+Te dejamos [el archivo de Insomnia](./Products_Insomnia.json) con ejemplos para probarlo.
+
 ## Links relacionados
 
 - [How to detect the n+1 query problem during testing](https://vladmihalcea.com/how-to-detect-the-n-plus-one-query-problem-during-testing/)
