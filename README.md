@@ -20,40 +20,38 @@ La clase **ProductosBootstrap** genera el juego de datos inicial cuando no hay f
 
 El único endpoint que publica el web server es `/productosRecientes`, que implementa el método GET:
 
-```xtend
-@GetMapping(value = "/productosRecientes")
-@ApiOperation("Trae la información de los últimos productos cargados.")
-def buscarPeliculas() {
-  productosRepository
-    .findAll(PageRequest.of(0, 5, Sort.Direction.ASC, "fechaIngreso"))
-    .map [ ProductoDTO.fromProducto(it) ]
-}
+```kt
+@GetMapping("/productosRecientes")
+    @ApiOperation("Trae la información de los últimos productos cargados.")
+    fun buscarProductosRecientes() =
+        productoRepository
+            .findAll(PageRequest.of(0, 1000, Sort.Direction.ASC, "fechaIngreso"))
+            .map { ProductoDTO.fromProducto(it) }
 ```
 
 Dado que tenemos una gran cantidad de productos, decidimos paginar los resultados que envía el repositorio: `.findAll(PageRequest.of(0, 5, Sort.Direction.ASC, "fechaIngreso"))` trae los primeros 5 resultados ordenados por fecha de ingreso en forma ascendente. Para poder trabajar con paginación debemos definir el repositorio extendiendo de la interfaz `PagingAndSortingRepository`:
 
-```xtend
-interface ProductosRepository extends PagingAndSortingRepository<Producto, Long> {
+```kt
+interface ProductoRepository : PagingAndSortingRepository<Producto, Long> {
 ```
 
 ## Configuración EAGER
 
 Podemos ver cómo está definido el mapeo del objeto de dominio Producto:
 
-```xtend
+```kt
 @Entity
-@Accessors
 class Producto {
-	
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	Long id
-	
-	...
-	
-	@JsonIgnore
-	@ManyToMany(fetch = FetchType.EAGER)
-	Set<Fabricante> proveedores
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    var id: Long? = null
+
+    ...
+    
+    @JsonIgnore
+    @ManyToMany(fetch = FetchType.EAGER)
+    var proveedores: Set<Fabricante> = mutableSetOf()
 ```
 
 Mmm... si los proveedores se anotan con FetchType EAGER, esto significa que cada vez que tomemos los datos de un producto también estaremos trayendo los proveedores. Si en el controller permitimos paginar 1000 elementos, vamos a ver que **efectivamente resulta un problema** esta configuración. Hagamos la llamada a la API:
@@ -62,10 +60,9 @@ Mmm... si los proveedores se anotan con FetchType EAGER, esto significa que cada
 http://localhost:8080/productosRecientes
 ```
 
-o bien en Swagger:
+o bien en Swagger o Insomnia:
 
 ![n + 1 queries problem](./images/nplusone.gif)
-
 
 Como pueden ver tenemos
 
@@ -105,23 +102,17 @@ Como pueden ver tenemos
 
 Podemos pensar entonces que si configuramos la relación producto-fabricantes como lazy, habremos resuelto nuestro problema:
 
-```xtend
+```kt
 @Entity
-@Accessors
 class Producto {
-	
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	Long id
-	
-  ...
+    ...
 
-	@JsonIgnore
-	@ManyToMany(fetch = FetchType.LAZY)
-	Set<Fabricante> proveedores
+    @JsonIgnore
+    @ManyToMany(fetch = FetchType.LAZY)
+    var proveedores: Set<Fabricante> = mutableSetOf()
 ```
 
-Nos vamos a llevar una sorpresa no muy grata:
+Pero si volvemos a levantar la aplicación, nos vamos a llevar una sorpresa no muy grata:
 
 ![lazy fail](./images/lazyFail.gif)
 
@@ -131,19 +122,23 @@ El mensaje de error es bastante claro:
 org.hibernate.LazyInitializationException: 
   failed to lazily initialize a collection of role: ar.edu.unsam.productos.domain.Producto.proveedores,
   could not initialize proxy - no Session
+  ...
+  at ar.edu.algo3.products.domain.Producto.getNombresDeProveedores(Producto.kt:30)
 ```
+
+La combinación "open-in-view" en falso, sumado a que los productos tienen una colección _lazy_ de proveedores, resulta en un error cuando queremos ver los proveedores de un producto si no tenemos la sesión de la base (cuando salimos del repositorio y estamos generando el DTO).
 
 ## Entity Graph to the rescue
 
 La configuración lazy es parte de la solución, pero debemos ajustar nuestro query para que los productos recientes los resuelva haciendo JOIN hacia la tabla de fabricantes **en la misma consulta**. Así evitamos el problema de los (n + 1) queries:
 
-```xtend
-interface ProductosRepository extends PagingAndSortingRepository<Producto, Long> {
+```kt
+interface ProductoRepository : PagingAndSortingRepository<Producto, Long> {
 
-	@EntityGraph(attributePaths=#[
-		"proveedores" 
+	@EntityGraph(attributePaths=[
+		"proveedores"
 	])
-	override Page<Producto> findAll(Pageable pageable)
+    override fun findAll(pageable: Pageable): Page<Producto>
 ```
 
 ![solution](./images/solution.gif)
