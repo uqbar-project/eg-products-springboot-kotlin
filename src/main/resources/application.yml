@@ -1,7 +1,7 @@
 spring:
   #   base de datos posta
   datasource:
-    url: jdbc:mysql://localhost/products
+    url: jdbc:mysql://localhost/products?createDatabaseIfNotExist=true
     username: root
     password:
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -10,5 +10,7 @@ spring:
     open-in-view: false
     show-sql: true
     hibernate:
-      format_sql: true
       ddl-auto: create-drop
+    properties:
+      hibernate:
+        format_sql: true
