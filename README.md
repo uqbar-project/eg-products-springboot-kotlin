@@ -22,11 +22,11 @@ El único endpoint que publica el web server es `/productosRecientes`, que imple
 
 ```kt
 @GetMapping("/productosRecientes")
-    @ApiOperation("Trae la información de los últimos productos cargados.")
-    fun buscarProductosRecientes() =
-        productoRepository
-            .findAll(PageRequest.of(0, 1000, Sort.Direction.ASC, "fechaIngreso"))
-            .map { ProductoDTO.fromProducto(it) }
+@ApiOperation("Trae la información de los últimos productos cargados.")
+fun buscarProductosRecientes() =
+    productoRepository
+        .findAll(PageRequest.of(0, 1000, Sort.Direction.ASC, "fechaIngreso"))
+        .map { ProductoDTO.fromProducto(it) }
 ```
 
 Dado que tenemos una gran cantidad de productos, decidimos paginar los resultados que envía el repositorio: `.findAll(PageRequest.of(0, 5, Sort.Direction.ASC, "fechaIngreso"))` trae los primeros 5 resultados ordenados por fecha de ingreso en forma ascendente. Para poder trabajar con paginación debemos definir el repositorio extendiendo de la interfaz `PagingAndSortingRepository`:
@@ -66,7 +66,7 @@ o bien en Swagger o Insomnia:
 
 Como pueden ver tenemos
 
-- un query que trae todos los productos (el 1)
+- un primer query que trae todos los productos
 
 ```sql
 -- Hibernate: query del producto  
@@ -135,9 +135,9 @@ La configuración lazy es parte de la solución, pero debemos ajustar nuestro qu
 ```kt
 interface ProductoRepository : PagingAndSortingRepository<Producto, Long> {
 
-	@EntityGraph(attributePaths=[
-		"proveedores"
-	])
+    @EntityGraph(attributePaths=[
+        "proveedores"
+    ])
     override fun findAll(pageable: Pageable): Page<Producto>
 ```
 
