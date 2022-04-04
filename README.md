@@ -126,7 +126,26 @@ org.hibernate.LazyInitializationException:
   at ar.edu.algo3.products.domain.Producto.getNombresDeProveedores(Producto.kt:30)
 ```
 
-La combinación "open-in-view" en falso, sumado a que los productos tienen una colección _lazy_ de proveedores, resulta en un error cuando queremos ver los proveedores de un producto si no tenemos la sesión de la base (cuando salimos del repositorio y estamos generando el DTO).
+El problema está en que los proveedores son una colección _lazy_ en producto, y que tenemos la configuración
+
+```yml
+open-in-view: false
+```
+
+Esto hace que la sesión se cierre
+
+- en el service cuyo método se demarca con la anotación @Transactional (sea read-only o no)
+- o bien en este caso dentro del método del ProductoRepository
+
+es decir, que en el momento en que el controller quiere serializar a JSON la respuesta del endpoint, ya no tenemos una sesión abierta y se lanza la excepción.
+
+Cambiar la configuración a
+
+```yml
+open-in-view: true
+```
+
+que es la opción por defecto de Springboot no mejora nuestro problema, volvemos a tener el mismo comportamiento que en el primer caso (con la configuración EAGER), porque **en la serialización a JSON estamos yendo a buscar los proveedores por cada uno de los productos**.
 
 ## Entity Graph to the rescue
 

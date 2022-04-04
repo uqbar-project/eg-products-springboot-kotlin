@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.RestController
 
+const val PRODUCT_PAGINATION_AMOUNT = 2500
+
 @RestController
 @CrossOrigin(origins = ["*"], methods = [RequestMethod.GET])
 class ProductoController {
@@ -22,7 +24,7 @@ class ProductoController {
     @Operation(summary = "Trae la información de los últimos productos cargados.")
     fun buscarProductosRecientes() =
         productoRepository
-            .findAll(PageRequest.of(0, 1000, Sort.Direction.ASC, "fechaIngreso"))
+            .findAll(PageRequest.of(0, PRODUCT_PAGINATION_AMOUNT, Sort.Direction.ASC, "fechaIngreso"))
             .map { ProductoDTO.fromProducto(it) }
 
 }
