@@ -5,6 +5,29 @@
 
 Este ejemplo permite ver el problema de los (N + 1) queries. Consiste en un servicio REST hecho con Spring Boot, que tiene un solo endpoint: el que permite consultar los productos más recientes.
 
+## Prerrequisitos
+
+Solo hace falta tener instalado [Docker](https://www.docker.com/). Una vez resuelto este paso abrí una consola de comandos y escribí
+
+```bash
+docker-compose up
+```
+
+Eso levanta tanto PostgreSQL como el cliente pgAdmin, como está explicado en [este ejemplo](https://github.com/uqbar-project/eg-manejo-proyectos-sql).
+
+La conexión a la base se configura en el archivo [`application.yml`](./src/main/resources/application.yml):
+
+```yml
+  datasource:
+    url: jdbc:postgresql://0.0.0.0:5432/products
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+```
+
+- `0.0.0.0` apunta a nuestro contenedor de Docker
+- el usuario y contraseña está definido en el archivo `docker-compose.yml`
+
 ## Dominio
 
 Tenemos productos y fabricantes, que cumplen una relación many-to-many: un producto tiene muchos fabricantes y un fabricante ofrece muchos productos. No hay relación en cascada: el producto y el fabricante tienen ciclos de vida separados.
@@ -18,21 +41,20 @@ La clase **ProductosBootstrap** genera el juego de datos inicial cuando no hay f
 
 ## Endpoint que trae los productos recientes
 
-El único endpoint que publica el web server es `/productosRecientes`, que implementa el método GET:
+El único endpoint que publica el web server es `/productosRecientes`, que implementa el método GET y llama al service para obtener los productos más recientes:
 
 ```kt
-@GetMapping("/productosRecientes")
-@ApiOperation("Trae la información de los últimos productos cargados.")
+@Transactional(Transactional.TxType.NEVER)
 fun buscarProductosRecientes() =
     productoRepository
-        .findAll(PageRequest.of(0, 1000, Sort.Direction.ASC, "fechaIngreso"))
+        .findAll(PageRequest.of(0, PRODUCT_PAGINATION_AMOUNT, Sort.Direction.ASC, "fechaIngreso"))
         .map { ProductoDTO.fromProducto(it) }
 ```
 
-Dado que tenemos una gran cantidad de productos, decidimos paginar los resultados que envía el repositorio: `.findAll(PageRequest.of(0, 5, Sort.Direction.ASC, "fechaIngreso"))` trae los primeros 5 resultados ordenados por fecha de ingreso en forma ascendente. Para poder trabajar con paginación debemos definir el repositorio extendiendo de la interfaz `PagingAndSortingRepository`:
+Dado que tenemos una gran cantidad de productos, decidimos paginar los resultados que envía el repositorio: `.findAll(PageRequest.of(0, 5, Sort.Direction.ASC, "fechaIngreso"))` trae los primeros 5 resultados ordenados por fecha de ingreso en forma ascendente. Para poder trabajar con paginación debemos definir el repositorio extendiendo de la interfaz `PagingAndSortingRepository`, además de la tradicional `CrudRepository` que nos provee el método save:
 
 ```kt
-interface ProductoRepository : PagingAndSortingRepository<Producto, Long> {
+interface ProductoRepository : PagingAndSortingRepository<Producto, Long>, CrudRepository<Producto, Long> {
 ```
 
 ## Configuración EAGER
@@ -191,6 +213,10 @@ Aun cuando hay que traer 1000 productos, la deserialización de la base hacia el
 ## Cómo testear la aplicación en Insomnia
 
 Te dejamos [el archivo de Insomnia](./Products_Insomnia.json) con ejemplos para probarlo.
+
+## Video en youtube
+
+Si querés ver la explicación en un video te dejamos [este link de youtube](https://youtu.be/w-OXtXoYn5M).
 
 ## Links relacionados
 
