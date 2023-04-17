@@ -257,6 +257,8 @@ Flyway crea una tabla `flyway_schema_history` donde va registrando las migracion
 
 Esto sirve tanto para la creación inicial de nuestras tablas como para los sucesivos cambios que la aplicación requiera hacer: agregar nuevas tablas, incorporar o eliminar campos, índices, secuencias, vistas, etc.
 
+Si querés investigar más podés chequear [este artículo](https://medium.com/swlh/introduction-of-flyway-with-spring-boot-d7c11145d012) o bien [la documentación oficial](https://flywaydb.org/documentation).
+
 ### Comportamiento en los tests
 
 Como estamos ejecutando nuestros tests de integración con una base de datos in-memory, no vamos a utilizar Flyway, por lo tanto debemos sobreescribir la configuración de test:
