@@ -219,9 +219,62 @@ Te dejamos [el archivo de Insomnia](./Products_Insomnia.json) con ejemplos para 
 
 Si querés ver la explicación en un video te dejamos [este link de youtube](https://youtu.be/w-OXtXoYn5M).
 
+## BONUS: Migraciones con Flyway
+
+### Cambios en la forma de levantar la aplicación
+
+En lugar de hacer que JPA genere las tablas, nosotros escribiremos nuestro propio script que cree las tablas y le pediremos a Flyway que ejecute ese script cuando levante la aplicación. Lo que tenemos que hacer es:
+
+- agregar las dependencias en el archivo [`build.gradle.kts`](./build.gradle.kts)
+- ubicar los scripts de creación de tablas y posteriores migraciones en el directorio [`/db/migrations`](./src/main/resources/db/migration). Son los que comienzan con la letra V y tienen el formato `Vxxx__name.sql` donde `xxx` es el número de versión y name es el nombre que vos quieras darle. También podés customizar tu propio formato, por ejemplo para utilizar fechas. Por último, debemos pensar en los scripts para deshacer los cambios (undo migrations) en el mismo directorio, son los que comienzan con la letra U.
+- en la configuración de la aplicación cambiamos la estrategia para que JPA solamente valide la estructura existente en las tablas vs. las definiciones que existen en el mapeo de los objetos de dominio:
+
+```yml
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: validate
+```
+
+A la configuración de flyway debemos indicarle cuál es el esquema de la base de datos, entre otras cosas:
+
+```yml
+spring:
+  flyway:
+    enabled: true
+    create-schemas: true
+    # si hay tres scripts: V1.sql, V2.sql y V3.sql y 
+    # en nuestra base local no se ejecutó V2.sql, out-of-order
+    # activado permite ejecutar los scripts pendientes
+    out-of-order: true
+    #
+    schemas: products
+```
+
+Flyway crea una tabla `flyway_schema_history` donde va registrando las migraciones que se fueron ejecutando:
+
+![flyway schema history](./images/flyway-schema-history.png)
+
+Esto sirve tanto para la creación inicial de nuestras tablas como para los sucesivos cambios que la aplicación requiera hacer: agregar nuevas tablas, incorporar o eliminar campos, índices, secuencias, vistas, etc.
+
+### Comportamiento en los tests
+
+Como estamos ejecutando nuestros tests de integración con una base de datos in-memory, no vamos a utilizar Flyway, por lo tanto debemos sobreescribir la configuración de test:
+
+```yml
+spring:
+  database: H2
+  flyway:
+    enabled: false
+
+  jpa:
+    hibernate:
+      # seguimos creando las tablas cuando levantamos una instancia de testing
+      ddl-auto: create-drop
+```
+
 ## Links relacionados
 
 - [How to detect the n+1 query problem during testing](https://vladmihalcea.com/how-to-detect-the-n-plus-one-query-problem-during-testing/)
 - [JPA Tips: avoiding the n+1 select problem](https://www.javacodegeeks.com/2018/04/jpa-tips-avoiding-the-n-1-select-problem.html)
 - [What is the solution for the n+1 issue in JPA and Hibernate](https://stackoverflow.com/questions/32453989/what-is-the-solution-for-the-n1-issue-in-jpa-and-hibernate)
-

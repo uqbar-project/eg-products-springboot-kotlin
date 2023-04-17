@@ -1,4 +1,10 @@
 spring:
+  flyway:
+    enabled: true
+    create-schemas: true
+    out-of-order: true
+    default-schema: public
+
   #   base de datos posta
   datasource:
     url: jdbc:postgresql://0.0.0.0:5432/products
@@ -10,7 +16,7 @@ spring:
     open-in-view: false
     show-sql: true
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: validate
     properties:
       hibernate:
         format_sql: true

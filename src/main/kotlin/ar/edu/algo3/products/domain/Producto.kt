@@ -29,7 +29,7 @@ class Producto {
     // @ManyToMany(fetch = FetchType.LAZY)
     // Configuración para que no tire el session not found, trae el inconveniente de n + 1 queries
     @ManyToMany(fetch = FetchType.EAGER)
-    var proveedores: Set<Fabricante> = mutableSetOf()
+    var fabricantes: Set<Fabricante> = mutableSetOf()
 
-    fun getNombresDeProveedores() = proveedores.map { it.nombre }.toSet()
+    fun getNombresDeProveedores() = fabricantes.map { it.nombre }.toSet()
 }

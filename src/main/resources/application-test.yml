@@ -1,5 +1,7 @@
 spring:
   database: H2
+  flyway:
+    enabled: false
 
   h2:
     console:

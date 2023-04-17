@@ -29,7 +29,7 @@ class ProductoBootstrap : InitializingBean {
         val producto = Producto().apply {
             nombre = "Producto $i"
             fechaIngreso = LocalDate.now().minusWeeks(i.toLong())
-            proveedores = if (i % 2 == 0) fabricantes.subList(0, 10).toSet() else fabricantes.subList(11, 15).toSet()
+            this.fabricantes = if (i % 2 == 0) fabricantes.subList(0, 10).toSet() else fabricantes.subList(11, 15).toSet()
         }
         productosRepository.save(producto)
     }

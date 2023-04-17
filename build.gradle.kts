@@ -7,6 +7,9 @@ plugins {
     kotlin("plugin.spring") version "1.8.10"
     kotlin("plugin.jpa") version "1.8.10"
     jacoco
+
+    // Migraciones - Flyway
+    id("org.flywaydb.flyway") version "6.4.3"
 }
 
 extra["springCloudVersion"] = "2022.0.0"
@@ -38,6 +41,9 @@ dependencies {
     // conexión a la base de datos
     implementation("org.postgresql:postgresql:42.5.3")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+
+    // migraciones
+    implementation("org.flywaydb:flyway-core:9.16.3")
 
     // testing
     testImplementation("com.h2database:h2:2.1.214")
