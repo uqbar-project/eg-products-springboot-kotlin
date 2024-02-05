@@ -1,14 +1,14 @@
 package ar.edu.algo3.products
 
+import ar.edu.algo3.products.domain.Fabricante
+import ar.edu.algo3.products.domain.Producto
+import ar.edu.algo3.products.repository.FabricanteRepository
+import ar.edu.algo3.products.repository.ProductoRepository
 import org.springframework.beans.factory.InitializingBean
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.builder.SpringApplicationBuilder
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
 import org.springframework.stereotype.Service
-import ar.edu.algo3.products.domain.Fabricante
-import ar.edu.algo3.products.domain.Producto
-import ar.edu.algo3.products.repository.FabricanteRepository
-import ar.edu.algo3.products.repository.ProductoRepository
 import java.time.LocalDate
 
 @Service
