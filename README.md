@@ -146,7 +146,7 @@ org.hibernate.LazyInitializationException:
   failed to lazily initialize a collection of role: ar.edu.unsam.productos.domain.Producto.proveedores,
   could not initialize proxy - no Session
   ...
-  at ar.edu.algo3.products.domain.Producto.getNombresDeProveedores(Producto.kt:30)
+  at ar.edu.phm.products.domain.Producto.getNombresDeProveedores(Producto.kt:30)
 ```
 
 El problema está en que los proveedores son una colección _lazy_ en producto, y que tenemos la configuración
