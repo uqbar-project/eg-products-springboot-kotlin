@@ -1,6 +1,6 @@
-package ar.edu.algo3.products.repository
+package ar.edu.phm.products.repository
 
-import ar.edu.algo3.products.domain.Fabricante
+import ar.edu.phm.products.domain.Fabricante
 import org.springframework.data.repository.CrudRepository
 
 interface FabricanteRepository : CrudRepository<Fabricante, Long>

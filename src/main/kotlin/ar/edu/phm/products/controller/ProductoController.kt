@@ -1,6 +1,6 @@
-package ar.edu.algo3.products.controller
+package ar.edu.phm.products.controller
 
-import ar.edu.algo3.products.service.ProductoService
+import ar.edu.phm.products.service.ProductoService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.CrossOrigin
 import org.springframework.web.bind.annotation.GetMapping

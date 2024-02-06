@@ -1,6 +1,6 @@
-package ar.edu.algo3.products.serializer
+package ar.edu.phm.products.serializer
 
-import ar.edu.algo3.products.domain.Producto
+import ar.edu.phm.products.domain.Producto
 import java.time.format.DateTimeFormatter
 
 class ProductoDTO {

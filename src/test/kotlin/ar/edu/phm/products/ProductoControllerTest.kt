@@ -1,4 +1,4 @@
-package ar.edu.algo3.products
+package ar.edu.phm.products
 
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test

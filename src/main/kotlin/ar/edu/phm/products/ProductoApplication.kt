@@ -1,4 +1,4 @@
-package ar.edu.algo3.products
+package ar.edu.phm.products
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication

@@ -1,6 +1,6 @@
-package ar.edu.algo3.products.repository
+package ar.edu.phm.products.repository
 
-import ar.edu.algo3.products.domain.Producto
+import ar.edu.phm.products.domain.Producto
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.CrudRepository

@@ -1,4 +1,4 @@
-package ar.edu.algo3.products.domain
+package ar.edu.phm.products.domain
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 import jakarta.persistence.*

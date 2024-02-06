@@ -1,7 +1,7 @@
-package ar.edu.algo3.products.service
+package ar.edu.phm.products.service
 
-import ar.edu.algo3.products.repository.ProductoRepository
-import ar.edu.algo3.products.serializer.ProductoDTO
+import ar.edu.phm.products.repository.ProductoRepository
+import ar.edu.phm.products.serializer.ProductoDTO
 import jakarta.transaction.Transactional
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.PageRequest

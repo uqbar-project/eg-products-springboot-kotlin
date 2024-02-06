@@ -1,9 +1,9 @@
-package ar.edu.algo3.products
+package ar.edu.phm.products
 
-import ar.edu.algo3.products.domain.Fabricante
-import ar.edu.algo3.products.domain.Producto
-import ar.edu.algo3.products.repository.FabricanteRepository
-import ar.edu.algo3.products.repository.ProductoRepository
+import ar.edu.phm.products.domain.Fabricante
+import ar.edu.phm.products.domain.Producto
+import ar.edu.phm.products.repository.FabricanteRepository
+import ar.edu.phm.products.repository.ProductoRepository
 import org.springframework.beans.factory.InitializingBean
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.builder.SpringApplicationBuilder
