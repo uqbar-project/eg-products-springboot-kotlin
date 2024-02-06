@@ -1,4 +1,8 @@
 spring:
+  # desactivamos Flyway para el testing porque vamos a hacer que JPA lo cree directamente
+  flyway:
+    enabled: false
+
   h2:
     console:
       enabled: true
