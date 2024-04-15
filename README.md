@@ -83,7 +83,7 @@ Mmm... si los proveedores se anotan con FetchType EAGER, esto significa que cada
 http://localhost:8080/productosRecientes
 ```
 
-o bien en Swagger o Insomnia:
+o bien en Insomnia:
 
 ![n + 1 queries problem](./images/nplusone.gif)
 
