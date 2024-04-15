@@ -41,9 +41,9 @@ class ProductoBootstrap : InitializingBean {
         if (fabricanteRepository.count() > 0) return
 
         val fabricantes = mutableListOf<Fabricante>()
-        (1..25).forEach { i -> fabricantes.add(crearFabricante(i)) }
+        (1..500).forEach { i -> fabricantes.add(crearFabricante(i)) }
 
-        (1..5000).forEach { i -> crearProducto(i, fabricantes) }
+        (1..15000).forEach { i -> crearProducto(i, fabricantes) }
     }
 
 }

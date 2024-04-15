@@ -10,7 +10,7 @@ import org.springframework.data.repository.PagingAndSortingRepository
 interface ProductoRepository : PagingAndSortingRepository<Producto, Long>, CrudRepository<Producto, Long> {
 
 //	@EntityGraph(attributePaths=[
-//		"proveedores"
+//		"fabricantes"
 //	])
     override fun findAll(pageable: Pageable): Page<Producto>
 
