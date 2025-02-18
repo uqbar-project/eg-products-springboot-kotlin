@@ -8,7 +8,7 @@ import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
 
-const val PRODUCT_PAGINATION_AMOUNT = 2500
+const val PRODUCT_PAGINATION_AMOUNT = 100
 
 @Service
 class ProductoService {

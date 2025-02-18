@@ -20,9 +20,9 @@ class Producto {
 
     @JsonIgnore
     // Configuración correcta: LAZY
-    // @ManyToMany(fetch = FetchType.LAZY)
+     @ManyToMany(fetch = FetchType.LAZY)
     // Configuración para que no tire el session not found, trae el inconveniente de n + 1 queries
-    @ManyToMany(fetch = FetchType.EAGER)
+//    @ManyToMany(fetch = FetchType.EAGER)
     var fabricantes: Set<Fabricante> = mutableSetOf()
 
     fun getNombresDeProveedores() = fabricantes.map { it.nombre }.toSet()

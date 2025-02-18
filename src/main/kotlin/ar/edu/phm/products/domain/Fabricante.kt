@@ -10,4 +10,5 @@ class Fabricante {
 
     @Column(length=150)
     var nombre = ""
+
 }
