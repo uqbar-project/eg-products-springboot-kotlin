@@ -37,8 +37,8 @@ Tenemos productos y fabricantes, que cumplen una relación many-to-many: un prod
 
 La clase **ProductosBootstrap** genera el juego de datos inicial cuando no hay fabricantes:
 
-- construye una lista de 25 fabricantes
-- y 5000 productos: a la mitad les pone los primeros 10 fabricantes y a la otra mitad les asigna los fabricantes ubicados en las posiciones 11, 12, 13, 14 y 15
+- construye una lista de 500 fabricantes
+- y 15000 productos: a la mitad les pone los primeros 10 fabricantes y a la otra mitad les asigna los fabricantes ubicados en las posiciones 11, 12, 13, 14 y 15
 
 ## Endpoint que trae los productos recientes
 
@@ -52,7 +52,9 @@ fun buscarProductosRecientes() =
         .map { ProductoDTO.fromProducto(it) }
 ```
 
-Dado que tenemos una gran cantidad de productos, decidimos paginar los resultados que envía el repositorio: `.findAll(PageRequest.of(0, 5, Sort.Direction.ASC, "fechaIngreso"))` trae los primeros 5 resultados ordenados por fecha de ingreso en forma ascendente. Para poder trabajar con paginación debemos definir el repositorio extendiendo de la interfaz `PagingAndSortingRepository`, además de la tradicional `CrudRepository` que nos provee el método save:
+Dado que tenemos una gran cantidad de productos, decidimos paginar los resultados que envía el repositorio:
+
+`.findAll(PageRequest.of(0, 5, Sort.Direction.ASC, "fechaIngreso"))` trae los primeros 5 resultados ordenados por fecha de ingreso en forma ascendente. Para poder trabajar con paginación debemos definir el repositorio extendiendo de la interfaz `PagingAndSortingRepository`, además de la tradicional `CrudRepository` que nos provee el método save:
 
 ```kt
 interface ProductoRepository : PagingAndSortingRepository<Producto, Long>, CrudRepository<Producto, Long> {
@@ -74,22 +76,12 @@ class Producto {
     
     @JsonIgnore
     @ManyToMany(fetch = FetchType.EAGER)
-    var proveedores: Set<Fabricante> = mutableSetOf()
+    var fabricantes: Set<Fabricante> = mutableSetOf()
 ```
 
-Mmm... si los proveedores se anotan con FetchType EAGER, esto significa que cada vez que tomemos los datos de un producto también estaremos trayendo los proveedores. Si en el controller permitimos paginar 1000 elementos, vamos a ver que **efectivamente resulta un problema** esta configuración. Hagamos la llamada a la API:
+Mmm... si los fabricantes se anotan con FetchType EAGER, esto significa que cada vez que tomemos los datos de un producto también estaremos trayendo los proveedores. En versiones anteriores, se producía
 
-```bash
-http://localhost:8080/productosRecientes
-```
-
-o bien en Insomnia:
-
-![n + 1 queries problem](./images/nplusone.gif)
-
-Como pueden ver tenemos
-
-- un primer query que trae todos los productos
+- un primer query que traía todos los productos
 
 ```sql
 -- Hibernate: query del producto  
@@ -121,6 +113,8 @@ Como pueden ver tenemos
         proveedore0_.Producto_id=?
 ```
 
+> Este tipo de inconveniente se llama N + 1 query, porque para N productos se hacen N + 1 llamadas. A partir de la versión 3.4 Springboot solucionó este problema y hace una llamada sola, aunque la desventaja de traer todo el grafo de un producto con sus fabricanes sigue existiendo.
+
 ## Lazy es la solución... o casi
 
 Podemos pensar entonces que si configuramos la relación producto-fabricantes como lazy, habremos resuelto nuestro problema:
@@ -132,7 +126,7 @@ class Producto {
 
     @JsonIgnore
     @ManyToMany(fetch = FetchType.LAZY)
-    var proveedores: Set<Fabricante> = mutableSetOf()
+    var fabricantes: Set<Fabricante> = mutableSetOf()
 ```
 
 Pero si volvemos a levantar la aplicación, nos vamos a llevar una sorpresa no muy grata:
@@ -149,7 +143,7 @@ org.hibernate.LazyInitializationException:
   at ar.edu.phm.products.domain.Producto.getNombresDeProveedores(Producto.kt:30)
 ```
 
-El problema está en que los proveedores son una colección _lazy_ en producto, y que tenemos la configuración
+El problema está en que los fabricantes son una colección _lazy_ en producto, y que tenemos la configuración
 
 ```yml
 open-in-view: false
@@ -168,7 +162,10 @@ Cambiar la configuración a
 open-in-view: true
 ```
 
-que es la opción por defecto de Springboot no mejora nuestro problema, volvemos a tener el mismo comportamiento que en el primer caso (con la configuración EAGER), porque **en la serialización a JSON estamos yendo a buscar los proveedores por cada uno de los productos**.
+que es la opción por defecto de Springboot parece solucionar nuestro problema:
+
+- al igual que la variante EAGER, Springboot hace una sola llamada
+- pero mantiene la sesión abierta y eso puede traer cuellos de botella en otro momento al no liberar la conexión hasta tanto no termine la serialización de los objetos DTO en el controller
 
 ## Entity Graph to the rescue
 
@@ -178,14 +175,14 @@ La configuración lazy es parte de la solución, pero debemos ajustar nuestro qu
 interface ProductoRepository : PagingAndSortingRepository<Producto, Long> {
 
     @EntityGraph(attributePaths=[
-        "proveedores"
+        "fabricantes"
     ])
     override fun findAll(pageable: Pageable): Page<Producto>
 ```
 
 ![solution](./images/solution.gif)
 
-Ahora sí, al disparar la consulta nuevamente, se resuelve todo en un único query:
+Ahora no solo se dispara un único query
 
 ```sql
 Hibernate: 
@@ -209,21 +206,29 @@ Hibernate:
         producto0_.fechaIngreso asc
 ```
 
-Aun cuando hay que traer 1000 productos, la deserialización de la base hacia el modelo de objetos en la JDK y el posterior render a JSON tarda bastante menos, pero sobre todo, no perjudicamos a la base haciendo 1001 consultas.
+pero además cerramos la sesión una vez que el repositorio termina de paginar la información.
 
 ## Cómo testear la aplicación en Insomnia
 
-Te dejamos [el archivo de Insomnia](./Products_Insomnia.json) con ejemplos para probarlo.
+Te dejamos los archivos en formato
+
+- [Bruno](./apiClient/Products_Insomnia.json)
+- [Insomnia](./apiClient/Products_Insomnia.json)
+- [POSTMAN](./apiClient/Products_Postman.json)
+
+con ejemplos para probarlo.
 
 ## Video en youtube
 
 Si querés ver la explicación en un video te dejamos [este link de youtube](https://youtu.be/w-OXtXoYn5M).
 
+> **Aclaración**: hasta la versión 3.4.2 de Springboot la variante EAGER producía n+1 queries. Eso ya está solucionado. 
+
 ## BONUS: Migraciones con Flyway
 
 ### Cambios en la forma de levantar la aplicación
 
-En lugar de hacer que JPA genere las tablas, nosotros escribiremos nuestro propio script que cree las tablas y le pediremos a Flyway que ejecute ese script cuando levante la aplicación. Lo que tenemos que hacer es:
+En lugar de hacer que JPA genere las tablas, nosotros escribiremos nuestro propio script que creará las tablas y le pediremos a Flyway que ejecute ese script cuando levante la aplicación. Lo que tenemos que hacer es:
 
 - agregar las dependencias en el archivo [`build.gradle.kts`](./build.gradle.kts)
 - ubicar los scripts de creación de tablas y posteriores migraciones en el directorio [`/db/migrations`](./src/main/resources/db/migration). Son los que comienzan con la letra V y tienen el formato `Vxxx__name.sql` donde `xxx` es el número de versión y name es el nombre que vos quieras darle. También podés customizar tu propio formato, por ejemplo para utilizar fechas. Por último, debemos pensar en los scripts para deshacer los cambios (undo migrations) en el mismo directorio, son los que comienzan con la letra U.
@@ -277,6 +282,4 @@ spring:
 
 ## Links relacionados
 
-- [How to detect the n+1 query problem during testing](https://vladmihalcea.com/how-to-detect-the-n-plus-one-query-problem-during-testing/)
-- [JPA Tips: avoiding the n+1 select problem](https://www.javacodegeeks.com/2018/04/jpa-tips-avoiding-the-n-1-select-problem.html)
 - [What is the solution for the n+1 issue in JPA and Hibernate](https://stackoverflow.com/questions/32453989/what-is-the-solution-for-the-n1-issue-in-jpa-and-hibernate)

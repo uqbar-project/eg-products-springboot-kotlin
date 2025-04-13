@@ -1,0 +1,42 @@
+{
+  "name": "Productos - n+1",
+  "version": "1",
+  "items": [
+    {
+      "type": "http",
+      "name": "Ver productos",
+      "filename": "Ver productos.bru",
+      "seq": 1,
+      "request": {
+        "url": "http://localhost:8080/productosRecientes",
+        "method": "GET",
+        "headers": [],
+        "params": [],
+        "body": {
+          "mode": "none",
+          "formUrlEncoded": [],
+          "multipartForm": [],
+          "file": []
+        },
+        "script": {},
+        "vars": {},
+        "assertions": [],
+        "tests": "",
+        "docs": "",
+        "auth": {
+          "mode": "none"
+        }
+      }
+    }
+  ],
+  "environments": [],
+  "brunoConfig": {
+    "version": "1",
+    "name": "PHM",
+    "type": "collection",
+    "ignore": [
+      "node_modules",
+      ".git"
+    ]
+  }
+}
