@@ -12,7 +12,7 @@ class ProductoDTO {
         fun fromProducto(producto: Producto): ProductoDTO =
             ProductoDTO().apply {
                 nombre = producto.nombre
-                fechaIngreso = DateTimeFormatter.ofPattern("dd/MM/yyy").format(producto.fechaIngreso)
+                fechaIngreso = DateTimeFormatter.ofPattern("dd/MM/yyyy").format(producto.fechaIngreso)
                 proveedores = producto.getNombresDeProveedores()
             }
     }
