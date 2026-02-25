@@ -1,5 +1,5 @@
 {
-  "name": "Productos - n+1",
+  "name": "Productos",
   "version": "1",
   "items": [
     {
@@ -7,6 +7,9 @@
       "name": "Ver productos",
       "filename": "Ver productos.bru",
       "seq": 1,
+      "settings": {},
+      "tags": [],
+      "examples": [],
       "request": {
         "url": "http://localhost:8080/productosRecientes",
         "method": "GET",
@@ -32,11 +35,13 @@
   "environments": [],
   "brunoConfig": {
     "version": "1",
-    "name": "PHM",
+    "name": "Productos",
     "type": "collection",
     "ignore": [
       "node_modules",
       ".git"
     ]
-  }
+  },
+  "exportedAt": "2026-02-05T09:51:06.766Z",
+  "exportedUsing": "Bruno/3.0.2"
 }
