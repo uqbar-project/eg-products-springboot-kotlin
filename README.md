@@ -262,6 +262,15 @@ Flyway crea una tabla `flyway_schema_history` donde va registrando las migracion
 
 Esto sirve tanto para la creación inicial de nuestras tablas como para los sucesivos cambios que la aplicación requiera hacer: agregar nuevas tablas, incorporar o eliminar campos, índices, secuencias, vistas, etc.
 
+Si navegás a la carpeta [`db/migration`](./src/main/resources/db/migration) de resources, vas a encontrar:
+
+- scripts que comienzan con V* => el que genera las tablas, y luego el que agrega el campo dirección para el fabricante
+- scripts que comienzan con U* => son los que deshacen los cambios (Undo) en caso de que el script salga mal
+
+Por defecto Flyway trabaja con un versionado numérico: V1, V2... etc. 
+
+Otra variante es usar fechas: V20260405213000__crear_tabla_profesores.sql,  V20260405214500__agregar_columna_email.sql lo cual es bueno para evitar colisiones cuando más de una persona quiere generar una migración. Solo hay que tener cuidado de dos cosas: 1. que no se haya ejecutado previamente los scripts con versionado numérico (en cuyo caso conviene que investigues qué es un [baseline on migrate](https://documentation.red-gate.com/fd/flyway-baseline-on-migrate-setting-277578974.html)), 2. que no se equivoquen al crear una fecha 20026 ó 20027 porque van a quedar desordenados los scripts.
+
 Si querés investigar más podés chequear [este artículo](https://medium.com/swlh/introduction-of-flyway-with-spring-boot-d7c11145d012) o bien [la documentación oficial](https://flywaydb.org/documentation).
 
 ### Comportamiento en los tests
