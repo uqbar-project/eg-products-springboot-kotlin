@@ -271,7 +271,7 @@ Por defecto Flyway trabaja con un versionado numérico: V1, V2... etc.
 
 Otra variante es usar fechas: V20260405213000__crear_tabla_profesores.sql,  V20260405214500__agregar_columna_email.sql lo cual es bueno para evitar colisiones cuando más de una persona quiere generar una migración. Solo hay que tener cuidado de dos cosas: 1. que no se haya ejecutado previamente los scripts con versionado numérico (en cuyo caso conviene que investigues qué es un [baseline on migrate](https://documentation.red-gate.com/fd/flyway-baseline-on-migrate-setting-277578974.html)), 2. que no se equivoquen al crear una fecha 20026 ó 20027 porque van a quedar desordenados los scripts.
 
-Si querés investigar más podés chequear [este artículo](https://medium.com/swlh/introduction-of-flyway-with-spring-boot-d7c11145d012) o bien [la documentación oficial](https://flywaydb.org/documentation).
+Si querés investigar más podés chequear [este artículo](https://medium.com/swlh/introduction-of-flyway-with-spring-boot-d7c11145d012) o bien [la documentación oficial](https://documentation.red-gate.com/fd/redgate-flyway-documentation-138346877.html).
 
 ### Comportamiento en los tests
 
